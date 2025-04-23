@@ -8,7 +8,15 @@ export const payfees = async(req,res)=>{
   const frontend_url = "http://localhost:5173";
   try {
    
-    const {studentId,amount,rollno,email,year} = req.body
+    const {studentId,amount,rollno,email,year} = req.body;
+    const student = await FeesModel.find({studentId,year,status:"paid"});
+    console.log(student);
+    if(student.length > 0){
+      return res.json({
+        success:false,
+        message:"Fees already paid"
+      })
+    }
     const feesObject = new FeesModel({
       studentId,
       amount,
@@ -65,7 +73,7 @@ export const verifyPayment = async (req,res)=>{
     const {paymentId,success} = req.body;
  
   if(success == "true"){
-    await FeesModel.findByIdAndUpdate(paymentId,{payment:"paid"})
+    await FeesModel.findByIdAndUpdate(paymentId,{status:"paid"})
     res.json({success:true,
       message:"paid"
     })

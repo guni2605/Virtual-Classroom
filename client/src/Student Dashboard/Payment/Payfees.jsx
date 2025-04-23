@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Payfees = () => {
   const [student, setStudent] = useState(null);
@@ -32,8 +33,12 @@ const Payfees = () => {
           headers: { token: localStorage.getItem("token") },
         }
       );
+      // console.log(response.data);
       if (response.data.success) {
         window.location.replace(response.data.url);
+      } else {
+        toast.success("Fees already paid for this year.");
+        setLoading(false);
       }
     } catch (error) {
       console.log("Payment error:", error);
